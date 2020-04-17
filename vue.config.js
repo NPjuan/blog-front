@@ -9,8 +9,9 @@ module.exports={
     host: 'localhost',
     port: 8080,
     proxy: {
+      // 配置代理不可以改变axios的baseURL,优先级不够高
       '/api': {
-        target: "http:192.168.0.1:8080",
+        target: "http://localhost:3000",
         changeOrigin: true,
         ws: true,
         pathRewrite: {

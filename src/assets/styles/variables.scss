@@ -1,2 +1,29 @@
 $black: #2c2f38;
-$warning: #cccaaa;
+$main-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+
+@mixin keyframes($animationName) {
+  @-webkit-keyframes #{$animationName} {
+    @content;
+  }
+  @-moz-keyframes #{$animationName} {
+    @content;
+  }
+  @-o-keyframes #{$animationName} {
+    @content;
+  }
+  @keyframes #{$animationName} {
+    @content;
+  }
+}
+@include keyframes(fade-up) {
+  from{
+    position: relative;
+    top: 200px;
+    opacity: 0;
+  }
+  to{
+    position: relative;
+    top: 0;
+    opacity: 1;
+  }
+}
