@@ -1,8 +1,5 @@
 <template>
   <div class="main">
-    <audio src=" https://music.163.com/song/media/outer/url?id=477310237.mp3" controls="controls">
-      Your browser does not support the audio element.
-    </audio>
     <h1 class="introduce" @click="edit">你好，<br/>我是潘俊渊</h1>
     <md-article :articleId="articleId">
     </md-article>
@@ -16,6 +13,7 @@
 import mdArticle from "../components/md-article"
 import websiteManageAPI from "../api/websiteManageAPI"
 import { deconstruct } from '../utils/index'
+import { MyPromise } from '../utils/myPromise'
 export default {
   name: 'Home',
   components: {
@@ -24,7 +22,7 @@ export default {
   data() {
     return {
       nickname: '',
-      articleId: 31
+      articleId: 1
     }
   },
   methods: {
@@ -35,10 +33,9 @@ export default {
     login() {
       websiteManageAPI.login({
         "email":"1040589574@qq.com",
-        "password":"123456"
+        "password":"7485963"
       })
         .then(res => {
-          console.log(res)
           const token = res.token
           window.localStorage.setItem('token', token)
           deconstruct(this, res)
@@ -53,34 +50,26 @@ export default {
       })
         .then(res => {
           deconstruct(this, res)
-          console.log(res)
         })
         .catch(err => {
           console.log(err)
         })
     },
+    musicLogin() {
+      let http = new XMLHttpRequest()
+      // http.withCredentials = true //部分请求或许需要该配置，具体请先查看文档
+      http.onreadystatechange=function()
+      {
+        if (http.readyState===4 && http.status===200) {
+          console.log(JSON.parse(http.responseText))
+        }
+      }
+      http.open("GET",`http://musicapi.leanapp.cn/login/cellphone?phone=13642943515&password=7485963`,true);
+      http.send();
+    }
   },
   mounted() {
-    // var xmlhttp;
-    // if (window.XMLHttpRequest)
-    // {
-    //   // IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
-    //   xmlhttp=new XMLHttpRequest();
-    //   xmlhttp.withCredentials = true
-    // }
-    // else
-    // {
-    //   // IE6, IE5 浏览器执行代码
-    //   xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-    // }
-    // xmlhttp.onreadystatechange=function()
-    // {
-    //   if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-    //     console.log(JSON.parse(xmlhttp.responseText))
-    //   }
-    // }
-    // xmlhttp.open("GET",`http://musicapi.leanapp.cn/search?keywords= 海阔天空&proxy=http://121.196.226.246:84`,true);
-    // xmlhttp.send();
+    this.loginByToken()
   }
 }
 </script>
@@ -89,6 +78,7 @@ export default {
   .main{
     min-height: 100vh;
     line-height: 1.5;
+    width: 100%;
     &:before{
       content: '';
       display: block;
@@ -98,6 +88,7 @@ export default {
       left: 0;
       top: 0;
       right: 0;
+      bottom: 0;
       z-index: -1;
       filter: brightness(50%);
       background-image: url("http://localhost:3000/images/background.jpg");
