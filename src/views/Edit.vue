@@ -3,7 +3,7 @@
     <div class="fence"></div>
     <div class="editor">
       <div class="title">
-        <p>新随笔</p>
+        <p @click="changeStatus">{{operationStatus}}</p>
         <input type="text" placeholder="请输入文章标题" v-model="title">
       </div>
       <mavon-editor
@@ -35,17 +35,18 @@
 
 <script>
   import icon from "../components/icon"
-  import toast from "../components/toast/src/toast"
+  import curtain from "../components/curtain"
   import websiteManageAPI from "../api/websiteManageAPI"
   import base from '../api/base'
   export default {
     name: "Edit",
     components: {
       icon,
-      toast
+      curtain
     },
     data() {
       return {
+        status: 0,  // 状态，0代表添加，1代表修改
         search: '', // 搜索
         articleId: 0,
         title: '',  // 文章标题
@@ -62,7 +63,19 @@
         }
       }
     },
+    computed: {
+      operationStatus() {
+        if (this.status) {
+          return '修改文章'
+        } else {
+          return '新随笔'
+        }
+      }
+    },
     methods: {
+      changeStatus() {
+        this.status = !this.status
+      },
       updateArticle(id) {
         const { title, content } = this
         websiteManageAPI.updateArticle({
@@ -86,7 +99,7 @@
           return
         }
         // 如果 articleId存在，就是修改文章而非直接保存
-        if (this.articleId) {
+        if (this.status) {
           console.log('现在是更改状态')
           this.updateArticle(this.articleId)
           return
@@ -127,10 +140,10 @@
           id
         })
         .then(res => {
-          console.log('res', res)
           this.title = res.title
           this.content = res.content
           this.articleId = res.id
+          this.status = 1
         })
       },
       handleDelete(article) {
@@ -174,7 +187,7 @@
         websiteManageAPI.loadImage(formData)
         .then(res => {
           const path = res.path.replace(/\\/g, '/')
-          this.$refs.editor.$img2Url(pos, `${base.remote}${path}`);
+          this.$refs.editor.$img2Url(pos, `${base.select}${path}`);
         })
         .catch(err => {
           console.log(err)
@@ -182,7 +195,7 @@
       },
       $imgDel(pos) {
         websiteManageAPI.deleteImage({
-          picPath: pos[0].replace(`${base.remote}`, '')
+          picPath: pos[0].replace(`${base.select}`, '')
         })
         .then(res => {
           console.log(res)
@@ -201,27 +214,7 @@
 
 <style scoped lang="scss">
   .container{
-    line-height: 1.5;
-    width: 100%;
     display: flex;
-    flex-direction: row;
-    overflow: auto;
-    &:before{
-      content: '';
-      display: block;
-      width: 100%;
-      height: 100%;
-      position: fixed;
-      left: 0;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      z-index: -1;
-      filter: brightness(50%);
-      background-image: url("http://localhost:3000/images/editBg.jpg");
-      background-size: cover;
-      background-repeat: no-repeat;
-    }
     .fence{
       min-width: 0;
       max-width: 250px;
@@ -231,7 +224,7 @@
     .editor{
       display: flex;
       flex-direction: column;
-      margin: 125px 15px 15px 15px;
+      margin: 100px 15px 15px 15px;
       width: 60%;
       max-width: 1400px;
       min-width: 900px;

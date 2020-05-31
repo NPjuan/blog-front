@@ -3,6 +3,7 @@
 import Vue from 'vue';
 import axios from "axios";
 import { Base64 } from 'js-base64'
+
 import websiteManageAPI from "../api/websiteManageAPI"
 import {deconstruct} from "../utils"
 // Full config:  https://github.com/axios/axios#request-config
@@ -33,6 +34,7 @@ const errorHandle = (status, other) => {
       break;
     // 403 token过期
     case 403:
+      console.log('token 失效')
       // 如果不需要自动刷新token，可以在这里移除本地存储中的token，跳转登录页
       break;
     // 404请求不存在
@@ -113,7 +115,8 @@ _axios.interceptors.response.use(
   },
   function(error) {
     // Do something with response error
-    errorHandle(error.status,error.msg);
+    const res = error.response
+    errorHandle(res.status,res.data.msg);
     return Promise.reject(error);
   }
 );

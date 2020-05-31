@@ -1,5 +1,6 @@
 <template>
   <div id="app" @keydown="adminSystem">
+    <curtain src="/images/background.jpg"></curtain>
     <transition name="fade">
       <router-view
               :class="classes"
@@ -7,11 +8,14 @@
       >
       </router-view>
     </transition>
+    <to-top></to-top>
   </div>
 </template>
 
 <script>
   import websiteManageAPI from "./api/websiteManageAPI"
+  import toTop from "./components/toTop"
+  import curtain from "./components/curtain"
   import adminAside from './components/admin-aside/src/admin-aside'
   export default {
     data() {
@@ -21,7 +25,9 @@
       }
     },
     components: {
-      adminAside
+      adminAside,
+      curtain,
+      toTop
     },
     watch: {
       state(newVal) {
@@ -77,7 +83,7 @@
     },
     mounted() {
       this.$bus.on('normal', () => {
-        this.normal = true
+        this.close()
       })
     }
   }
@@ -85,16 +91,18 @@
 
 <style lang="scss" scoped>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   overflow-x: hidden;
+
   .normal{
-    transition: all .5s ease-in-out;
+    width: 100%; /*防止切换时页面崩塌*/
     min-height: 100vh;
-    transform: translate3d(0, 0, 0);
     overflow: hidden;
+    transform: translate3d(0, 0, 0);
+    transition: all .5s ease-in-out;
+    background-color: transparent;
   }
   .abbreviation{
     transform: translate3d(150px, 0, -300px);

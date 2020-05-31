@@ -13,6 +13,7 @@
               v-model="form.account">
       </p-input>
       <p-input
+              type="text"
               :required="true"
               label="密码"
               name="password"
@@ -20,7 +21,7 @@
               placeholder="请输入密码"
               v-model="form.password">
       </p-input>
-      <p-button type="success" style="width: 100%" @click="submit">登录</p-button>
+      <p-button type="success" style="width: 100%" @click="login">登录</p-button>
     </p-form>
   </aside>
 </template>
@@ -57,7 +58,7 @@
       }
     },
     methods: {
-      submit() {
+      login() {
         let result = this.$refs.form.validator(this.rules).every(item => {
           return item.status === true
         })
@@ -68,11 +69,12 @@
         })
         .then(res => {
           if (res.nickname) {
+            window.localStorage.setItem('token', res.token)
             this.$message({
               type: 'success',
               content: `欢迎你 ${res.nickname}`
             })
-            this.close()
+            this.$bus.emit('normal')
           }
         })
         .catch(err => {

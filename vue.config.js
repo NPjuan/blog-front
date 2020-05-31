@@ -20,21 +20,4 @@ module.exports={
       },
     },
   },
-
-  pluginOptions: {
-    'style-resources-loader': {
-      preProcessor: 'scss',
-      patterns: [
-        path.resolve(__dirname, 'src/assets/styles/variables.scss')
-      ]
-    }
-  },
-  chainWebpack: config => {
-    // 设置快捷路径， @ 表示 'src' ，components 表示 'src/components'
-    config.resolve.alias
-      // .set('@', resolve('src'))
-      .set('assets', resolve('src/assets'))
-      .set('components', resolve('src/components'))
-      .set('views', resolve('src/views'))
-  },
 }
